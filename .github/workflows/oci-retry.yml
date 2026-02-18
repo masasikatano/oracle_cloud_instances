@@ -2,7 +2,7 @@ name: OCI A1.Flex 自動リトライ
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # 30分ごとに実行
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -15,14 +15,12 @@ jobs:
       - name: OCI 設定ファイル作成
         run: |
           mkdir -p ~/.oci
-          cat <<EOF > ~/.oci/config
-[DEFAULT]
-user=${{ secrets.OCI_USER_OCID }}
-fingerprint=${{ secrets.OCI_FINGERPRINT }}
-tenancy=${{ secrets.OCI_TENANCY_OCID }}
-region=${{ secrets.OCI_REGION }}
-key_file=/home/runner/.oci/oci_api_key.pem
-EOF
+          echo "[DEFAULT]" > ~/.oci/config
+          echo "user=${{ secrets.OCI_USER_OCID }}" >> ~/.oci/config
+          echo "fingerprint=${{ secrets.OCI_FINGERPRINT }}" >> ~/.oci/config
+          echo "tenancy=${{ secrets.OCI_TENANCY_OCID }}" >> ~/.oci/config
+          echo "region=${{ secrets.OCI_REGION }}" >> ~/.oci/config
+          echo "key_file=/home/runner/.oci/oci_api_key.pem" >> ~/.oci/config
           echo "${{ secrets.OCI_PRIVATE_KEY }}" > ~/.oci/oci_api_key.pem
           chmod 600 ~/.oci/oci_api_key.pem
 
@@ -82,7 +80,7 @@ EOF
           from: ${{ secrets.GMAIL_USER }}
           subject: "✅ OCI A1.Flex インスタンス作成成功！"
           body: "A1.Flexインスタンスの作成に成功しました。OCIコンソールを確認してください。"
-          
+
       - name: 成功後にワークフローを無効化
         if: steps.create_instance.outputs.result == 'succeeded'
         run: |
