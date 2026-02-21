@@ -50,7 +50,7 @@ jobs:
 
           echo "ジョブID: $JOB_ID"
 
-          for i in $(seq 1 10); do
+          for i in $(seq 1 20); do
             sleep 30
             STATE=$(oci resource-manager job get \
               --job-id $JOB_ID \
